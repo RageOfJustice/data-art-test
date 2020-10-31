@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { List, Container, CssBaseline, Grid } from '@material-ui/core';
-import { ListItem } from './components';
+import { Container, CssBaseline, Grid } from '@material-ui/core';
+
+import { List } from './features/todo/components';
 
 import firebase from 'firebase/app';
 import 'firebase/database';
@@ -12,29 +13,19 @@ const db = firebase.database();
 //   id: ref.key,
 //   items: [
 //     {
+//       parentID: ref.key,
 //       id: '1',
 //       text: 'Hello',
 //       done: false,
 //     },
 //     {
+//       parentID: ref.key,
 //       id: '2',
 //       text: 'Duck',
 //       done: true,
 //     },
 //   ],
 // });
-
-interface TODOItem {
-  text: string;
-  done?: boolean;
-  id: string;
-}
-
-interface TODOList {
-  id: string;
-  name: string;
-  items: TODOItem[];
-}
 
 function App() {
   const [lists, setLists] = useState<TODOList[]>([]);
@@ -47,20 +38,19 @@ function App() {
         setLists([]);
       }
     });
+
+    return () => {
+      db.ref('lists').off('value');
+    };
   }, []);
+
   return (
     <Container>
       <CssBaseline />
       <Grid container spacing={2}>
-        {lists.map(({ items, id }) => (
-          <Grid key={id} item xs={12} md={6} lg={3}>
-            <List>
-              {items.map(({ text, done, id }) => (
-                <ListItem done={done} key={id}>
-                  {text}
-                </ListItem>
-              ))}
-            </List>
+        {lists.map((list) => (
+          <Grid key={list.id} item xs={12} md={6} lg={3}>
+            <List list={list} />
           </Grid>
         ))}
       </Grid>

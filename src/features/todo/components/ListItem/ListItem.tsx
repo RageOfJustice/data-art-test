@@ -6,23 +6,33 @@ import {
   ListItemSecondaryAction,
   IconButton,
   Checkbox,
+  makeStyles,
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 
 import InputListItem from './InputListItem';
 
+const useClasses = makeStyles({
+  container: {
+    '& .MuiListItemSecondaryAction-root': {
+      display: 'none',
+    },
+    '&:hover .MuiListItemSecondaryAction-root': {
+      display: 'block',
+    },
+  },
+});
+
 interface Props {
-  children: string;
+  item: TODOItem;
   onCheck?: (newValue: boolean) => void;
-  done?: boolean;
   onFinishEditing?: (text: string) => void;
 }
 
 const ListItem: React.FC<Props> = ({
   onCheck,
   onFinishEditing,
-  children = '',
-  done = false,
+  item: { text = '', done = false },
 }) => {
   const [editMode, setEditMode] = useState(false);
   const handleEdit = useCallback(
@@ -36,20 +46,22 @@ const ListItem: React.FC<Props> = ({
     onCheck?.(!done);
   }, [onCheck, done]);
 
+  const classes = useClasses();
+
   if (editMode) {
-    return <InputListItem onFinishEditing={handleEdit} text={children} />;
+    return <InputListItem onFinishEditing={handleEdit} text={text} />;
   }
 
   return (
-    <MUIListItem button onClick={handleCheck}>
+    <MUIListItem classes={classes} button onClick={handleCheck}>
       <ListItemIcon>
-        <Checkbox edge="start" checked={done} />
+        <Checkbox disableRipple edge="start" checked={done} />
       </ListItemIcon>
-      <ListItemText>{children}</ListItemText>
+      <ListItemText>{text}</ListItemText>
       {!done && (
         <ListItemSecondaryAction>
           <IconButton edge="end" onClick={() => setEditMode(true)}>
-            <Edit />
+            <Edit fontSize="small" />
           </IconButton>
         </ListItemSecondaryAction>
       )}

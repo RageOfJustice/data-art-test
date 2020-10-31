@@ -20,6 +20,7 @@ const InputListItem: React.FC<Props> = ({ text, onFinishEditing }) => {
     <ListItem>
       <ListItemText>
         <TextField
+          autoFocus
           onChange={(e) => setNewText(e.target.value)}
           fullWidth
           onKeyDown={(e) => {
@@ -32,8 +33,12 @@ const InputListItem: React.FC<Props> = ({ text, onFinishEditing }) => {
         />
       </ListItemText>
       <ListItemSecondaryAction>
-        <IconButton edge="end" onClick={() => onFinishEditing?.(newText)}>
-          <Done />
+        <IconButton
+          color="primary"
+          edge="end"
+          onClick={() => onFinishEditing?.(newText)}
+        >
+          <Done fontSize="small" />
         </IconButton>
       </ListItemSecondaryAction>
     </ListItem>
