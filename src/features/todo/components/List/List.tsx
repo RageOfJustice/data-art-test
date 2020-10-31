@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
-import {
-  List as MUIList,
-  Paper,
-  Box,
-  Typography,
-  Grid,
-  IconButton,
-} from '@material-ui/core';
-import { Edit, Delete } from '@material-ui/icons';
+import { List as MUIList, Paper, Box } from '@material-ui/core';
 
 import firebase from 'firebase/app';
 import 'firebase/database';
 
 import ListItem from './ListItem';
+import ListHeader from './ListHeader';
 import EditableText from './EditableText';
 
 const db = firebase.database();
@@ -44,6 +37,10 @@ const List: React.FC<Props> = ({ list: { items, name, id } }) => {
     }
   };
 
+  const deleteList = () => {
+    db.ref(`lists/${id}`).set(null);
+  };
+
   return (
     <Box>
       <Paper>
@@ -51,20 +48,13 @@ const List: React.FC<Props> = ({ list: { items, name, id } }) => {
           {editMode ? (
             <EditableText text={name} onFinishEditing={changeListName} />
           ) : (
-            <Grid container spacing={2}>
-              <Grid item xs>
-                <Typography variant="h5">{name}</Typography>
-              </Grid>
-              <Grid item xs="auto">
-                <IconButton onClick={() => setEditMode(true)}>
-                  <Edit />
-                </IconButton>
-                <IconButton color="secondary">
-                  <Delete />
-                </IconButton>
-              </Grid>
-            </Grid>
+            <ListHeader
+              text={name}
+              onDelete={deleteList}
+              onEdit={() => setEditMode(true)}
+            />
           )}
+
           <MUIList>
             {items.map((item, index) => (
               <ListItem
