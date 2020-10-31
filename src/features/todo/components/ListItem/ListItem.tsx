@@ -38,7 +38,9 @@ const ListItem: React.FC<Props> = ({
   const handleEdit = useCallback(
     (newText: string) => {
       setEditMode(false);
-      onFinishEditing?.(newText);
+      if (newText) {
+        onFinishEditing?.(newText);
+      }
     },
     [onFinishEditing]
   );
