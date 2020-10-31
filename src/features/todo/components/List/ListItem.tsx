@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 
-import InputListItem from './InputListItem';
+import EditableText from './EditableText';
 
 const useClasses = makeStyles({
   container: {
@@ -51,7 +51,11 @@ const ListItem: React.FC<Props> = ({
   const classes = useClasses();
 
   if (editMode) {
-    return <InputListItem onFinishEditing={handleEdit} text={text} />;
+    return (
+      <MUIListItem>
+        <EditableText onFinishEditing={handleEdit} text={text} />
+      </MUIListItem>
+    );
   }
 
   return (
