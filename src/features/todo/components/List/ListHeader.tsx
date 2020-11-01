@@ -28,7 +28,7 @@ const ListHeader: React.FC<Props> = ({ text, onEdit, onDelete }) => {
     popupId: 'delete-popup',
   });
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} alignItems="center">
       <Grid item xs>
         <Typography variant="h5">{text}</Typography>
       </Grid>

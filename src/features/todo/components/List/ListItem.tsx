@@ -15,8 +15,11 @@ import EditTextInput from './EditTextInput';
 import type { AppDispatch, AppState } from 'src/features/store';
 import { todoActions, todoSelectors } from '../../slice';
 
-const useClasses = makeStyles(({ palette }) => ({
-  cotnainer: {
+const useClasses = makeStyles({
+  root: ({ done }: { done?: boolean }) => ({
+    transition: 'opacity .2s linear',
+    opacity: done ? 0.5 : 1,
+
     listStyle: 'none',
     '& .MuiListItemSecondaryAction-root': {
       display: 'none',
@@ -24,14 +27,8 @@ const useClasses = makeStyles(({ palette }) => ({
     '&:hover .MuiListItemSecondaryAction-root': {
       display: 'block',
     },
-  },
-  text: ({ done }: { done?: boolean }) => ({
-    transition: 'all .2s linear',
-    fontSize: done ? '0.9rem' : undefined,
-    color: done ? palette.grey[300] : undefined,
-    fontStyle: done ? 'italic' : undefined,
   }),
-}));
+});
 
 interface Props {
   itemID: string;
@@ -74,7 +71,7 @@ const ListItem: React.FC<Props> = ({ itemID }) => {
   }
 
   return (
-    <MUIListItem ContainerProps={{ className: classes.cotnainer }}>
+    <MUIListItem classes={classes}>
       <ListItemIcon>
         <Checkbox
           color="default"
@@ -83,10 +80,7 @@ const ListItem: React.FC<Props> = ({ itemID }) => {
           checked={done}
         />
       </ListItemIcon>
-      <ListItemText
-        primaryTypographyProps={{ className: classes.text }}
-        primary={text}
-      />
+      <ListItemText primary={text} />
       {!done && (
         <ListItemSecondaryAction>
           <IconButton edge="end" onClick={() => setEditMode(true)}>
