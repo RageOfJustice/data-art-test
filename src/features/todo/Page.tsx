@@ -86,11 +86,11 @@ const Page: React.FC = () => {
     <Box py={2}>
       <Grid container spacing={2}>
         {lists.map((list) => (
-          <Grid key={list.id} item xs={12} md={6} lg={3}>
+          <Grid key={list.id} item xs={12} sm={6} md={4} lg={3}>
             <List list={list} />
           </Grid>
         ))}
-        <Grid item xs={12} md={6} lg={3}>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
           <NewListButton />
         </Grid>
       </Grid>
