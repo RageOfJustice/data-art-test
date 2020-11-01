@@ -9,8 +9,11 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
+import { useDispatch, useSelector } from 'react-redux';
 
 import EditTextInput from './EditTextInput';
+import type { AppDispatch, AppState } from 'src/features/store';
+import { todoActions, todoSelectors } from '../../slice';
 
 const useClasses = makeStyles(({ palette }) => ({
   cotnainer: {
@@ -31,29 +34,34 @@ const useClasses = makeStyles(({ palette }) => ({
 }));
 
 interface Props {
-  item: TODOItem;
-  onCheck?: (newValue: boolean) => void;
-  onFinishEditing?: (text: string) => void;
+  itemID: string;
 }
 
-const ListItem: React.FC<Props> = ({
-  onCheck,
-  onFinishEditing,
-  item: { text = '', done = false },
-}) => {
+const ListItem: React.FC<Props> = ({ itemID }) => {
   const [editMode, setEditMode] = useState(false);
+  const item = useSelector((state: AppState) =>
+    todoSelectors.itemSelectors.selectById(state, itemID)
+  );
+
+  const text = item?.text ?? '';
+  const done = item?.done;
+
+  const dispatch = useDispatch<AppDispatch>();
   const handleEdit = useCallback(
     (newText: string) => {
       setEditMode(false);
-      if (newText) {
-        onFinishEditing?.(newText);
+      if (newText && item) {
+        dispatch(todoActions.updateTODOItem({ ...item, text: newText }));
       }
     },
-    [onFinishEditing]
+    [dispatch, item]
   );
+
   const handleCheck = useCallback(() => {
-    onCheck?.(!done);
-  }, [onCheck, done]);
+    if (item) {
+      dispatch(todoActions.updateTODOItem({ ...item, done: !item.done }));
+    }
+  }, [dispatch, item]);
 
   const classes = useClasses({ done });
 

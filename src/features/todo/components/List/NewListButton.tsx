@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import { Paper, Box, Button } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+
 import EditTextInput from './EditTextInput';
 
-interface Props {
-  onFinishEditing?: (text: string) => void;
-}
+import type { AppDispatch } from 'src/features/store';
+import { todoActions } from '../../slice';
 
-const NewListButton: React.FC<Props> = ({ onFinishEditing }) => {
+const NewListButton: React.FC = () => {
   const [addMode, setAddMode] = useState(false);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const changeListName = (newName: string) => {
     setAddMode(false);
 
     if (newName) {
-      onFinishEditing?.(newName);
+      dispatch(todoActions.createTODOList(newName));
     }
   };
 

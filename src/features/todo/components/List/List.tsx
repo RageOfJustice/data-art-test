@@ -5,17 +5,16 @@ import {
   SortableElement,
   SortEndHandler,
 } from 'react-sortable-hoc';
-import arrayMove from 'array-move';
 
-import firebase from 'firebase/app';
-import 'firebase/database';
+import { useDispatch } from 'react-redux';
 
 import ListItem from './ListItem';
 import ListHeader from './ListHeader';
 import NewListItem from './NewListItem';
 import EditTextInput from './EditTextInput';
 
-const db = firebase.database();
+import { todoActions } from '../../slice';
+import { AppDispatch } from 'src/features/store';
 
 interface Props {
   list: TODOList;
@@ -24,42 +23,25 @@ interface Props {
 const SortableItem = SortableElement(ListItem);
 const SortableList = SortableContainer(MUIList);
 
-const List: React.FC<Props> = ({ list: { items = [], name, id } }) => {
-  const toggleItem = ({ done }: TODOItem, index: number) => {
-    db.ref(`lists/${id}/items/${index}/done`).set(!done);
-  };
-
-  const changeItemText = (index: number, newText: string) => {
-    db.ref(`lists/${id}/items/${index}/text`).set(newText.trim());
-  };
-  const addItem = (newText: string) => {
-    db.ref(`lists/${id}/items`).transaction((items) => {
-      if (!items) {
-        return [{ id: 0, text: newText.trim() }];
-      }
-
-      return [...items, { id: items.length, text: newText.trim() }];
-    });
-  };
-
+const List: React.FC<Props> = ({ list: { name, id, itemIDs }, list }) => {
   const [editMode, setEditMode] = useState(false);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const changeListName = (newName: string) => {
     setEditMode(false);
 
     if (newName) {
-      db.ref(`lists/${id}/name`).set(newName);
+      dispatch(todoActions.updateTODOList({ id, name: newName }));
     }
   };
 
   const deleteList = () => {
-    db.ref(`lists/${id}`).set(null);
+    dispatch(todoActions.deleteTODOList(list));
   };
 
-  const changeSorting: SortEndHandler = ({ oldIndex, newIndex }) => {
-    db.ref(`lists/${id}/items`).transaction((items) =>
-      arrayMove(items, oldIndex, newIndex)
-    );
+  const changeSorting: SortEndHandler = (indicies) => {
+    dispatch(todoActions.changeTODOItemsOrders({ ...indicies, id }));
   };
 
   return (
@@ -80,16 +62,10 @@ const List: React.FC<Props> = ({ list: { items = [], name, id } }) => {
         )}
 
         <SortableList dense onSortEnd={changeSorting} distance={10}>
-          {items.map((item, index) => (
-            <SortableItem
-              index={index}
-              item={item}
-              onCheck={() => toggleItem(item, index)}
-              onFinishEditing={(newText) => changeItemText(index, newText)}
-              key={item.id}
-            />
+          {itemIDs.map((id, index) => (
+            <SortableItem index={index} itemID={id} key={id} />
           ))}
-          <NewListItem onFinishEditing={addItem} />
+          <NewListItem listID={id} />
         </SortableList>
       </Box>
     </Paper>

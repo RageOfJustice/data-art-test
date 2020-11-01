@@ -2,11 +2,15 @@ interface TODOItem {
   text: string;
   done?: boolean;
   id: string;
-  parentID: string;
+  listID: string;
+  timestamp: number;
 }
 
 interface TODOList {
   id: string;
   name: string;
-  items?: TODOItem[];
+  itemIDs: string[];
+  timestamp: number;
 }
+
+type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;

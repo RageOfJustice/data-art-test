@@ -5,23 +5,29 @@ import {
   ListItemIcon,
 } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
+import { useDispatch } from 'react-redux';
 
 import EditTextInput from './EditTextInput';
+import { AppDispatch } from 'src/features/store';
+import { todoActions } from '../../slice';
 
 interface Props {
-  onFinishEditing?: (text: string) => void;
+  listID: string;
 }
 
-const NewListItem: React.FC<Props> = ({ onFinishEditing }) => {
+const NewListItem: React.FC<Props> = ({ listID }) => {
   const [addMode, setAddMode] = useState(false);
+
+  const dispatch = useDispatch<AppDispatch>();
+
   const handleEdit = useCallback(
     (newText: string) => {
       if (newText) {
-        onFinishEditing?.(newText);
+        dispatch(todoActions.createTODOItem({ text: newText, listID }));
       }
       setAddMode(false);
     },
-    [onFinishEditing]
+    [dispatch, listID]
   );
 
   if (addMode) {
