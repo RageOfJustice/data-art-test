@@ -24,10 +24,13 @@ const List: React.FC<Props> = ({ list: { items = [], name, id } }) => {
     db.ref(`lists/${id}/items/${index}/text`).set(newText.trim());
   };
   const addItem = (newText: string) => {
-    db.ref(`lists/${id}/items`).transaction((items) => [
-      ...items,
-      { id: items.length, text: newText.trim() },
-    ]);
+    db.ref(`lists/${id}/items`).transaction((items) => {
+      if (!items) {
+        return [{ id: 0, text: newText.trim() }];
+      }
+
+      return [...items, { id: items.length, text: newText.trim() }];
+    });
   };
 
   const [editMode, setEditMode] = useState(false);
@@ -48,7 +51,11 @@ const List: React.FC<Props> = ({ list: { items = [], name, id } }) => {
     <Paper>
       <Box p={2}>
         {editMode ? (
-          <EditTextInput text={name} onFinishEditing={changeListName} />
+          <EditTextInput
+            placeholder="Enter TODO list name"
+            text={name}
+            onFinishEditing={changeListName}
+          />
         ) : (
           <ListHeader
             text={name}

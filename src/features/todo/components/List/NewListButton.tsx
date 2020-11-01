@@ -22,7 +22,11 @@ const NewListButton: React.FC<Props> = ({ onFinishEditing }) => {
     return (
       <Paper>
         <Box p={2}>
-          <EditTextInput text="" onFinishEditing={changeListName} />
+          <EditTextInput
+            placeholder="Enter TODO list name"
+            text=""
+            onFinishEditing={changeListName}
+          />
         </Box>
       </Paper>
     );

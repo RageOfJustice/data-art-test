@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, CssBaseline, Grid } from '@material-ui/core';
+import { Container, CssBaseline, Grid, Box } from '@material-ui/core';
 
 import { List, NewListButton } from './features/todo/components';
 
@@ -7,25 +7,6 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 
 const db = firebase.database();
-// const ref = db.ref('lists').push();
-// ref.set({
-//   name: 'test',
-//   id: ref.key,
-//   items: [
-//     {
-//       parentID: ref.key,
-//       id: '1',
-//       text: 'Hello',
-//       done: false,
-//     },
-//     {
-//       parentID: ref.key,
-//       id: '2',
-//       text: 'Duck',
-//       done: true,
-//     },
-//   ],
-// });
 
 function App() {
   const [lists, setLists] = useState<TODOList[]>([]);
@@ -55,16 +36,18 @@ function App() {
   return (
     <Container>
       <CssBaseline />
-      <Grid container spacing={2}>
-        {lists.map((list) => (
-          <Grid key={list.id} item xs={12} md={6} lg={3}>
-            <List list={list} />
+      <Box py={2}>
+        <Grid container spacing={2}>
+          {lists.map((list) => (
+            <Grid key={list.id} item xs={12} md={6} lg={3}>
+              <List list={list} />
+            </Grid>
+          ))}
+          <Grid item xs={12} md={6} lg={3}>
+            <NewListButton onFinishEditing={addNewList} />
           </Grid>
-        ))}
-        <Grid item xs={12} md={6} lg={3}>
-          <NewListButton onFinishEditing={addNewList} />
         </Grid>
-      </Grid>
+      </Box>
     </Container>
   );
 }

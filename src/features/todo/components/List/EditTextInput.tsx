@@ -4,10 +4,15 @@ import { Done, Cancel } from '@material-ui/icons';
 
 interface Props {
   text: string;
+  placeholder?: string;
   onFinishEditing?: (newText: string) => void;
 }
 
-const EditTextInput: React.FC<Props> = ({ text, onFinishEditing }) => {
+const EditTextInput: React.FC<Props> = ({
+  text,
+  placeholder = 'What to do?',
+  onFinishEditing,
+}) => {
   const [newText, setNewText] = useState(text);
   const [touched, setTouched] = useState(false);
 
@@ -39,7 +44,7 @@ const EditTextInput: React.FC<Props> = ({ text, onFinishEditing }) => {
               onFinishEditing?.('');
             }
           }}
-          placeholder="What to do?"
+          placeholder={placeholder}
           error={showError}
           helperText={
             showError &&
