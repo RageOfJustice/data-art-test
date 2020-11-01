@@ -14,6 +14,7 @@ import EditTextInput from './EditTextInput';
 
 const useClasses = makeStyles(({ palette }) => ({
   cotnainer: {
+    listStyle: 'none',
     '& .MuiListItemSecondaryAction-root': {
       display: 'none',
     },
@@ -65,18 +66,13 @@ const ListItem: React.FC<Props> = ({
   }
 
   return (
-    <MUIListItem
-      ContainerProps={{ className: classes.cotnainer }}
-      button
-      onClick={handleCheck}
-    >
+    <MUIListItem ContainerProps={{ className: classes.cotnainer }}>
       <ListItemIcon>
         <Checkbox
           color="default"
-          disableRipple
+          onClick={handleCheck}
           edge="start"
           checked={done}
-          disabled={done}
         />
       </ListItemIcon>
       <ListItemText

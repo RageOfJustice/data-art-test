@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import { List as MUIList, Paper, Box } from '@material-ui/core';
+import {
+  SortableContainer,
+  SortableElement,
+  SortEndHandler,
+} from 'react-sortable-hoc';
+import arrayMove from 'array-move';
 
 import firebase from 'firebase/app';
 import 'firebase/database';
@@ -14,6 +20,9 @@ const db = firebase.database();
 interface Props {
   list: TODOList;
 }
+
+const SortableItem = SortableElement(ListItem);
+const SortableList = SortableContainer(MUIList);
 
 const List: React.FC<Props> = ({ list: { items = [], name, id } }) => {
   const toggleItem = ({ done }: TODOItem, index: number) => {
@@ -47,6 +56,12 @@ const List: React.FC<Props> = ({ list: { items = [], name, id } }) => {
     db.ref(`lists/${id}`).set(null);
   };
 
+  const changeSorting: SortEndHandler = ({ oldIndex, newIndex }) => {
+    db.ref(`lists/${id}/items`).transaction((items) =>
+      arrayMove(items, oldIndex, newIndex)
+    );
+  };
+
   return (
     <Paper>
       <Box p={2}>
@@ -64,9 +79,10 @@ const List: React.FC<Props> = ({ list: { items = [], name, id } }) => {
           />
         )}
 
-        <MUIList dense>
+        <SortableList dense onSortEnd={changeSorting} distance={10}>
           {items.map((item, index) => (
-            <ListItem
+            <SortableItem
+              index={index}
               item={item}
               onCheck={() => toggleItem(item, index)}
               onFinishEditing={(newText) => changeItemText(index, newText)}
@@ -74,7 +90,7 @@ const List: React.FC<Props> = ({ list: { items = [], name, id } }) => {
             />
           ))}
           <NewListItem onFinishEditing={addItem} />
-        </MUIList>
+        </SortableList>
       </Box>
     </Paper>
   );

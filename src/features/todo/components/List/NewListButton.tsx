@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Paper, Box, Button } from '@material-ui/core';
-
 import EditTextInput from './EditTextInput';
 
 interface Props {
