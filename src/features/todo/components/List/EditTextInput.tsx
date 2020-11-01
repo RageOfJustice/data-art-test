@@ -7,8 +7,9 @@ interface Props {
   onFinishEditing?: (newText: string) => void;
 }
 
-const EditableText: React.FC<Props> = ({ text, onFinishEditing }) => {
+const EditTextInput: React.FC<Props> = ({ text, onFinishEditing }) => {
   const [newText, setNewText] = useState(text);
+  const [touched, setTouched] = useState(false);
 
   const disabled = useMemo(() => {
     if (!newText.trim()) {
@@ -17,26 +18,32 @@ const EditableText: React.FC<Props> = ({ text, onFinishEditing }) => {
 
     return /[<>\\#${}]+/.test(newText);
   }, [newText]);
+  const showError = disabled && touched;
 
   return (
     <Grid container spacing={2}>
       <Grid item xs>
         <TextField
           autoFocus
-          onChange={(e) => setNewText(e.target.value)}
+          onChange={(e) => {
+            if (!touched) {
+              setTouched(true);
+            }
+            setNewText(e.target.value);
+          }}
           fullWidth
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !disabled) {
               onFinishEditing?.(newText);
+            } else if (e.key === 'Escape') {
+              onFinishEditing?.('');
             }
           }}
-          onBlur={() => {
-            onFinishEditing?.('');
-          }}
           placeholder="What to do?"
-          error={disabled}
+          error={showError}
           helperText={
-            disabled && 'Text must not contain <, >, \\, #, $, {, } or be empty'
+            showError &&
+            'Text must not contain <, >, \\, #, $, {, } or be empty'
           }
           value={newText}
         />
@@ -58,4 +65,4 @@ const EditableText: React.FC<Props> = ({ text, onFinishEditing }) => {
   );
 };
 
-export default EditableText;
+export default EditTextInput;

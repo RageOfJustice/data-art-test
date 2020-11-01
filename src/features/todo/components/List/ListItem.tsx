@@ -7,13 +7,14 @@ import {
   IconButton,
   Checkbox,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 
-import EditableText from './EditableText';
+import EditTextInput from './EditTextInput';
 
-const useClasses = makeStyles({
-  container: {
+const useClasses = makeStyles(({ palette }) => ({
+  cotnainer: {
     '& .MuiListItemSecondaryAction-root': {
       display: 'none',
     },
@@ -21,7 +22,13 @@ const useClasses = makeStyles({
       display: 'block',
     },
   },
-});
+  text: ({ done }: { done?: boolean }) => ({
+    transition: 'all .2s linear',
+    fontSize: done ? '0.9rem' : undefined,
+    color: done ? palette.grey[300] : undefined,
+    fontStyle: done ? 'italic' : undefined,
+  }),
+}));
 
 interface Props {
   item: TODOItem;
@@ -48,22 +55,34 @@ const ListItem: React.FC<Props> = ({
     onCheck?.(!done);
   }, [onCheck, done]);
 
-  const classes = useClasses();
+  const classes = useClasses({ done });
 
   if (editMode) {
     return (
       <MUIListItem>
-        <EditableText onFinishEditing={handleEdit} text={text} />
+        <EditTextInput onFinishEditing={handleEdit} text={text} />
       </MUIListItem>
     );
   }
 
   return (
-    <MUIListItem classes={classes} button onClick={handleCheck}>
+    <MUIListItem
+      ContainerProps={{ className: classes.cotnainer }}
+      button
+      onClick={handleCheck}
+    >
       <ListItemIcon>
-        <Checkbox disableRipple edge="start" checked={done} />
+        <Checkbox
+          color="default"
+          disableRipple
+          edge="start"
+          checked={done}
+          disabled={done}
+        />
       </ListItemIcon>
-      <ListItemText>{text}</ListItemText>
+      <ListItemText disableTypography>
+        <Typography className={classes.text}>{text}</Typography>
+      </ListItemText>
       {!done && (
         <ListItemSecondaryAction>
           <IconButton edge="end" onClick={() => setEditMode(true)}>

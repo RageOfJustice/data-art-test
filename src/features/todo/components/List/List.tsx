@@ -6,7 +6,8 @@ import 'firebase/database';
 
 import ListItem from './ListItem';
 import ListHeader from './ListHeader';
-import EditableText from './EditableText';
+import NewListItem from './NewListItem';
+import EditTextInput from './EditTextInput';
 
 const db = firebase.database();
 
@@ -15,16 +16,18 @@ interface Props {
 }
 
 const List: React.FC<Props> = ({ list: { items, name, id } }) => {
-  const toggleItem = ({ parentID, done }: TODOItem, index: number) => {
-    db.ref(`lists/${parentID}/items/${index}/done`).set(!done);
+  const toggleItem = ({ done }: TODOItem, index: number) => {
+    db.ref(`lists/${id}/items/${index}/done`).set(!done);
   };
 
-  const changeItemText = (
-    { parentID }: TODOItem,
-    index: number,
-    newText: string
-  ) => {
-    db.ref(`lists/${parentID}/items/${index}/text`).set(newText.trim());
+  const changeItemText = (index: number, newText: string) => {
+    db.ref(`lists/${id}/items/${index}/text`).set(newText.trim());
+  };
+  const addItem = (newText: string) => {
+    db.ref(`lists/${id}/items`).transaction((items) => [
+      ...items,
+      { id: items.length, text: newText.trim() },
+    ]);
   };
 
   const [editMode, setEditMode] = useState(false);
@@ -46,7 +49,7 @@ const List: React.FC<Props> = ({ list: { items, name, id } }) => {
       <Paper>
         <Box p={2}>
           {editMode ? (
-            <EditableText text={name} onFinishEditing={changeListName} />
+            <EditTextInput text={name} onFinishEditing={changeListName} />
           ) : (
             <ListHeader
               text={name}
@@ -60,12 +63,11 @@ const List: React.FC<Props> = ({ list: { items, name, id } }) => {
               <ListItem
                 item={item}
                 onCheck={() => toggleItem(item, index)}
-                onFinishEditing={(newText) =>
-                  changeItemText(item, index, newText)
-                }
+                onFinishEditing={(newText) => changeItemText(index, newText)}
                 key={item.id}
               />
             ))}
+            <NewListItem onFinishEditing={addItem} />
           </MUIList>
         </Box>
       </Paper>
