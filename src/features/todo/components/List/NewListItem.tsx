@@ -1,5 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { ListItem as MuiListItem, ListItemText } from '@material-ui/core';
+import {
+  ListItem as MuiListItem,
+  ListItemText,
+  ListItemIcon,
+} from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 
 import EditTextInput from './EditTextInput';
@@ -30,9 +34,10 @@ const NewListItem: React.FC<Props> = ({ onFinishEditing }) => {
 
   return (
     <MuiListItem button onClick={() => setAddMode(true)}>
-      <ListItemText>
+      <ListItemIcon>
         <Add color="secondary" />
-      </ListItemText>
+      </ListItemIcon>
+      <ListItemText primary="Add new todo" />
     </MuiListItem>
   );
 };

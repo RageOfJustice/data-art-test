@@ -8,5 +8,5 @@ interface TODOItem {
 interface TODOList {
   id: string;
   name: string;
-  items: TODOItem[];
+  items?: TODOItem[];
 }

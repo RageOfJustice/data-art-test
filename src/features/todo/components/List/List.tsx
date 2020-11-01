@@ -15,7 +15,7 @@ interface Props {
   list: TODOList;
 }
 
-const List: React.FC<Props> = ({ list: { items, name, id } }) => {
+const List: React.FC<Props> = ({ list: { items = [], name, id } }) => {
   const toggleItem = ({ done }: TODOItem, index: number) => {
     db.ref(`lists/${id}/items/${index}/done`).set(!done);
   };
@@ -45,33 +45,31 @@ const List: React.FC<Props> = ({ list: { items, name, id } }) => {
   };
 
   return (
-    <Box>
-      <Paper>
-        <Box p={2}>
-          {editMode ? (
-            <EditTextInput text={name} onFinishEditing={changeListName} />
-          ) : (
-            <ListHeader
-              text={name}
-              onDelete={deleteList}
-              onEdit={() => setEditMode(true)}
-            />
-          )}
+    <Paper>
+      <Box p={2}>
+        {editMode ? (
+          <EditTextInput text={name} onFinishEditing={changeListName} />
+        ) : (
+          <ListHeader
+            text={name}
+            onDelete={deleteList}
+            onEdit={() => setEditMode(true)}
+          />
+        )}
 
-          <MUIList>
-            {items.map((item, index) => (
-              <ListItem
-                item={item}
-                onCheck={() => toggleItem(item, index)}
-                onFinishEditing={(newText) => changeItemText(index, newText)}
-                key={item.id}
-              />
-            ))}
-            <NewListItem onFinishEditing={addItem} />
-          </MUIList>
-        </Box>
-      </Paper>
-    </Box>
+        <MUIList dense>
+          {items.map((item, index) => (
+            <ListItem
+              item={item}
+              onCheck={() => toggleItem(item, index)}
+              onFinishEditing={(newText) => changeItemText(index, newText)}
+              key={item.id}
+            />
+          ))}
+          <NewListItem onFinishEditing={addItem} />
+        </MUIList>
+      </Box>
+    </Paper>
   );
 };
 

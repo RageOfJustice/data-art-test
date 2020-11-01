@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, CssBaseline, Grid } from '@material-ui/core';
 
-import { List } from './features/todo/components';
+import { List, NewListButton } from './features/todo/components';
 
 import firebase from 'firebase/app';
 import 'firebase/database';
@@ -44,6 +44,14 @@ function App() {
     };
   }, []);
 
+  const addNewList = (newName: string) => {
+    const ref = db.ref('lists').push();
+    ref.set({
+      name: newName,
+      id: ref.key,
+    });
+  };
+
   return (
     <Container>
       <CssBaseline />
@@ -53,6 +61,9 @@ function App() {
             <List list={list} />
           </Grid>
         ))}
+        <Grid item xs={12} md={6} lg={3}>
+          <NewListButton onFinishEditing={addNewList} />
+        </Grid>
       </Grid>
     </Container>
   );

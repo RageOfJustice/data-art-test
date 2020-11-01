@@ -7,7 +7,6 @@ import {
   IconButton,
   Checkbox,
   makeStyles,
-  Typography,
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 
@@ -80,9 +79,10 @@ const ListItem: React.FC<Props> = ({
           disabled={done}
         />
       </ListItemIcon>
-      <ListItemText disableTypography>
-        <Typography className={classes.text}>{text}</Typography>
-      </ListItemText>
+      <ListItemText
+        primaryTypographyProps={{ className: classes.text }}
+        primary={text}
+      />
       {!done && (
         <ListItemSecondaryAction>
           <IconButton edge="end" onClick={() => setEditMode(true)}>
