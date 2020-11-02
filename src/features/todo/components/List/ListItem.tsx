@@ -43,7 +43,7 @@ const ListItem: React.FC<Props> = ({ itemID }) => {
   );
 
   const text = item?.text ?? '';
-  const done = item?.done;
+  const done = item?.done ?? false;
 
   const dispatch = useDispatch<AppDispatch>();
   const handleEdit = useCallback(
