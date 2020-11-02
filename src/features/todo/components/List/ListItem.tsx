@@ -16,17 +16,19 @@ import type { AppDispatch, AppState } from 'src/features/store';
 import { todoActions, todoSelectors } from '../../slice';
 
 const useClasses = makeStyles({
+  container: {
+    listStyle: 'none',
+
+    '& .MuiListItemSecondaryAction-root': {
+      visibility: 'hidden',
+    },
+    '&:hover .MuiListItemSecondaryAction-root': {
+      visibility: 'visible',
+    },
+  },
   root: ({ done }: { done?: boolean }) => ({
     transition: 'opacity .2s linear',
     opacity: done ? 0.5 : 1,
-
-    listStyle: 'none',
-    '& .MuiListItemSecondaryAction-root': {
-      display: 'none',
-    },
-    '&:hover .MuiListItemSecondaryAction-root': {
-      display: 'block',
-    },
   }),
 });
 
@@ -81,13 +83,12 @@ const ListItem: React.FC<Props> = ({ itemID }) => {
         />
       </ListItemIcon>
       <ListItemText primary={text} style={{ wordBreak: 'break-word' }} />
-      {!done && (
-        <ListItemSecondaryAction>
-          <IconButton edge="end" onClick={() => setEditMode(true)}>
-            <Edit fontSize="small" />
-          </IconButton>
-        </ListItemSecondaryAction>
-      )}
+
+      <ListItemSecondaryAction>
+        <IconButton edge="end" onClick={() => setEditMode(true)}>
+          <Edit fontSize="small" />
+        </IconButton>
+      </ListItemSecondaryAction>
     </MUIListItem>
   );
 };
