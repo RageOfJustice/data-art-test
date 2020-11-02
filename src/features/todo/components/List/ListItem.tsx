@@ -80,7 +80,7 @@ const ListItem: React.FC<Props> = ({ itemID }) => {
           checked={done}
         />
       </ListItemIcon>
-      <ListItemText primary={text} />
+      <ListItemText primary={text} style={{ wordBreak: 'break-word' }} />
       {!done && (
         <ListItemSecondaryAction>
           <IconButton edge="end" onClick={() => setEditMode(true)}>

@@ -16,6 +16,7 @@ const Page: React.FC = () => {
   const lists = useSelector(todoSelectors.listSelectors.selectAll);
   const dispatch = useDispatch<AppDispatch>();
 
+  // TODO: move to custom hook?
   useEffect(() => {
     (async () => {
       const snapshot = await db.ref().once('value');
